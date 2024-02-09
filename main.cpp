@@ -1,45 +1,136 @@
-#include <iostream>
+#include<iostream>
 
-//盤面 空白(0) 黒(-1) 白(1) 番兵(2)
-int board[10][10] = {};
-//手番
-int player = -1;
 
-//盤面の生成
-void make_board() {
-	//番兵
-	for (int i = 0; i < 10; i++) {
-		board[0][i] = 2;
-		board[9][i] = 2;
-		board[i][0] = 2;
-		board[i][9] = 2;
+//#define boradSize 10 //盤の一辺
+//#define squaresSize boradSize + 2 //処理対象のマス目の数
+
+#define squaresSize 20
+
+int board[squaresSize][squaresSize] = { };
+int player = 1;
+
+enum Stone {
+
+	None = 0,
+	Black = -1,
+	White = 1,
+	Sentinel = 2,
+};
+
+void initBoard();
+bool isEnd();
+void showBoard();
+void printPlayer();
+bool isPlaceable( int, int );
+int checkDir(int, int, int, int);
+void putStone(int, int);
+void totalingStone( int* );
+void printResult( int* );
+
+int main() {
+
+	int resultArray[2] = {};
+
+	initBoard();
+
+	while (isEnd()) {
+	
+		showBoard();
+
+		printPlayer();
+
+		int row, line;
+		do {
+
+			std::cout << "Input where you wanna put. \nex) >> [row] [line]" << std::endl << ">> ";
+			std::cin >> row >> line;
+
+		} while ( !isPlaceable( row, line ) );
+
+		putStone( row, line);
+
+		player *= -1;
 	}
-	//基本位置
-	board[4][4] = 1;
-	board[5][5] = 1;
-	board[4][5] = -1;
-	board[5][4] = -1;
+
+	showBoard();
+
+	totalingStone( resultArray );
+	printResult( resultArray );
+
+	return 0;
 }
 
-//盤面の表示
-void show_board() {
-	//番兵も含めて表示
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
+void initBoard() {
+
+	int initBasePosition = squaresSize / 2;
+
+	board[initBasePosition][initBasePosition] = White;
+	board[initBasePosition - 1][initBasePosition - 1] = White;
+	board[initBasePosition][initBasePosition - 1] = Black;
+	board[initBasePosition - 1][initBasePosition] = Black;
+
+	//番兵
+	for (int i = 0; i < squaresSize; i++) {
+
+		board[0][i] = Sentinel;
+		board[i][0] = Sentinel;
+		board[squaresSize - 1][i] = Sentinel;
+		board[i][squaresSize - 1] = Sentinel;
+	}
+
+	return;
+}
+
+bool isEnd() {
+
+	for (int i = 1; i < squaresSize - 1;i++) {
+		for (int j = 1;j < squaresSize - 1;j++) {
+
+			if (isPlaceable(i, j)) {
+
+				return true;
+			}
+		}
+	}
+
+	//プレイヤーを交代して試行
+	player *= -1;
+	for (int i = 1; i < squaresSize - 1; i++) {
+		for (int j = 1; j < squaresSize - 1; j++) {
+
+			if (isPlaceable(i, j)) {
+
+				std::cout << "置ける場所がないため、プレーヤーを交代します." << std::endl;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void showBoard() {
+
+	for (int i = 0; i < squaresSize ; i++) {
+
+		for (int j = 0; j < squaresSize ; j++) {
+
 			switch (board[i][j]) {
-			case -1:
+
+			case Black:
+				std::cout << "〇";
+				break;
+
+			case White :
 				std::cout << "●";
 				break;
-			case 1:
-				std::cout << "○";
+
+			case None:
+				std::cout << "ー";
 				break;
-			case 0:
-				std::cout << "-";
-				break;
-			case 2:
-				//std::cout << "~";
-				break;
+
 			default:
+				std::cout << "0";
 				break;
 			}
 		}
@@ -47,72 +138,32 @@ void show_board() {
 	}
 }
 
-//手番の表示
-void show_player() {
+void printPlayer() {
+
 	switch (player) {
-	case -1:
-		std::cout << "先手(黒)の手番です" << std::endl;
+
+	case Black:
+		std::cout << "先手(黒)の番" << std::endl;
 		break;
-	case 1:
-		std::cout << "後手(白)の手番です" << std::endl;
-		break;
-	default:
-		//std::cout << "error" << std::endl;
+
+	case White:
+		std::cout << "後手(白)の番" << std::endl;
 		break;
 	}
 }
+bool isPlaceable(int _row, int _line) {
 
-//特定の座標から特定の方向に挟めるか判定
-int check_dir(int i, int j, int dir_i, int dir_j) {
-	//指定方向に相手の石がある場合は次のマスを探索する
-	int times = 1;
-	while (board[i + dir_i * times][j + dir_j * times] == player * -1) {
-		times++;
-	}
-	//指定方向の最後に自分の石がある場合
-	if (board[i + dir_i * times][j + dir_j * times] == player) {
-		//指定方向に相手の石が何個あるかを返す
-		return times - 1;
-	}
-	//指定方向の最後に自分の石がなければ0を返す
-	return 0;
-}
+	if (board[_row][_line] == None) {
+		//空であれば処理
 
-//特定の場所に置くことができるか判定
-bool check_plc(int i, int j) {
-	//場所が空であるかどうか
-	if (board[i][j] == 0) {
-		//全方向を探索
-		for (int dir_i = -1; dir_i < 2; dir_i++) {
-			for (int dir_j = -1; dir_j < 2; dir_j++) {
-				if (check_dir(i, j, dir_i, dir_j)) {
-					//配置可能であればtrueを返す
+		for (int dir_row = -1; dir_row < 2; dir_row++) {
+			for (int dir_line = -1; dir_line < 2; dir_line++) {
+
+				if ( checkDir(_row, _line, dir_row, dir_line) ) {
+
 					return true;
 				}
-			}
-		}
-	}
-	return false;
-}
 
-//終了判定
-bool flag_fin() {
-	//置ける場所があるか判定
-	for (int i = 1; i < 9; i++) {
-		for (int j = 1; j < 9; j++) {
-			if (check_plc(i, j)) {
-				return true;
-			}
-		}
-	}
-
-	//プレイヤーを変えて置ける場所があるか判定
-	player *= -1;
-	for (int i = 1; i < 9; i++) {
-		for (int j = 1; j < 9; j++) {
-			if (check_plc(i, j)) {
-				std::cout << "置く場所がないためPlayerを変更しました" << std::endl;
-				return true;
 			}
 		}
 	}
@@ -120,74 +171,73 @@ bool flag_fin() {
 	return false;
 }
 
-//石を配置する
-void place_stn(int i, int j) {
-	//方向毎に走査
-	for (int dir_i = -1; dir_i < 2; dir_i++) {
-		for (int dir_j = -1; dir_j < 2; dir_j++) {
-			//挟んだ石の数
-			int change_num = check_dir(i, j, dir_i, dir_j);
-			//挟んだ石の数だけ置き換える
-			for (int k = 1; k < change_num + 1; k++) {
-				board[i + dir_i * k][j + dir_j * k] = player;
-			}
-		}
-	}
-	//配置箇所を置き換える
-	board[i][j] = player;
-}
+int checkDir(int _row, int _line, int dir_row, int dir_line) {
 
-//勝敗判定
-void judge_board() {
-	int count_b = 0; //黒石の数
-	int count_w = 0; //白石の数
-	for (int i = 1; i < 9; i++) {
-		for (int j = 1; j < 9; j++) {
-			if (board[i][j] == -1) {
-				count_b++;
-			}
-			else if (board[i][j] == 1) {
-				count_w++;
-			}
-		}
-	}
-	//結果表示
-	std::cout << "先手" << count_b << ":後手" << count_w << std::endl;
-	//勝敗判定
-	if (count_b > count_w) {
-		std::cout << "先手の勝利" << std::endl;
-	}
-	else if (count_w > count_b) {
-		std::cout << "後手の勝利" << std::endl;
-	}
-	else {
-		std::cout << "引き分け" << std::endl;
-	}
-}
+	int num = 1;
+	while (board[_row + dir_row * num][_line + dir_line * num] == player * -1) {
+		//自分の石または番兵であれば終了
 
-int main() {
-	//盤面の生成
-	make_board();
-	//終了までループ
-	while (flag_fin()) {
-		//盤面の表示
-		show_board();
-		//手番の表示
-		show_player();
-		//入力受付
-		int i, j;
-		do {
-			std::cout << "配置場所を入力してください" << std::endl;
-			std::cin >> i >> j;
-		} while (!check_plc(i, j));
-		//石を配置する
-		place_stn(i, j);
-		//手番を入れ替える
-		player *= -1;
+		num++;
 	}
-	//盤面の表示
-	show_board();
-	//勝利判定
-	judge_board();
+
+	if (board[_row + dir_row * num][_line + dir_line * num] == player) {
+		//番兵でなければ自分の石であり、挟めるので、相手の石の数を返す
+
+		return num - 1;
+	}
+
 	return 0;
+}
+
+
+void putStone(int _row, int _line) {
+
+	//配置箇所の石の置き換え
+	board[_row][_line] = player;
+
+	for (int i = -1; i < 2; i++) {
+		for (int j = -1; j < 2;j++) {
+
+			int numChange = checkDir(_row, _line, i, j);
+
+			for (int k = 1; k < numChange; k++) {
+				//挟める箇所の石の置き換え
+				
+				board[_row + i * k][_line + j * k] = player;
+			}
+		}
+	}
+
+	return;
+}
+
+void  totalingStone( int* result ) {
+
+	int countBlackStone = 0;
+	int countWhiteStone = 0;
+
+	for (int i = 1; i < squaresSize - 1; i++) {
+		for (int j = 1; j < squaresSize - 1; j++) {
+
+			if (board[i][j] == Black) {
+
+				countBlackStone++;
+			}
+			else if (board[i][j] == White) {
+
+				countWhiteStone++;
+			}
+		}
+	}
+
+	result[0] = countBlackStone;
+	result[1] = countWhiteStone;
+
+	return;
+}
+
+
+void printResult(int* result) {
+
+
 }
