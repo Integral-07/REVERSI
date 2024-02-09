@@ -5,8 +5,6 @@
 #define squaresSize ( boardSize + 2 ) //ˆ—‘ÎÛ‚Ìƒ}ƒX–Ú‚Ì”
 
 
-
-
 int board[squaresSize][squaresSize] = { };
 
 Players player("player1", "player2");
