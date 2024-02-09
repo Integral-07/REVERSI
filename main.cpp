@@ -1,13 +1,9 @@
 #include<iostream>
 
 
-//#define boradSize 10 //盤の一辺
-//#define squaresSize boradSize + 2 //処理対象のマス目の数
+#define boardSize 10 //盤の一辺
+#define squaresSize ( boardSize + 2 ) //処理対象のマス目の数
 
-#define squaresSize 20
-
-int board[squaresSize][squaresSize] = { };
-int player = 1;
 
 enum Stone {
 
@@ -17,7 +13,11 @@ enum Stone {
 	Sentinel = 2,
 };
 
+int board[squaresSize][squaresSize] = { };
+int player = Black;
+
 void initBoard();
+void changePlayer();
 bool isEnd();
 void showBoard();
 void printPlayer();
@@ -47,9 +47,9 @@ int main() {
 
 		} while ( !isPlaceable( row, line ) );
 
-		putStone( row, line);
+		putStone( row, line );
 
-		player *= -1;
+		changePlayer();
 	}
 
 	showBoard();
@@ -81,6 +81,23 @@ void initBoard() {
 	return;
 }
 
+void changePlayer() {
+
+	switch ( player )
+	{
+	case Black:
+		player = White;
+		break;
+	case White:
+		player = Black;
+		break;
+	default:
+		break;
+	}
+
+	return;
+}
+
 bool isEnd() {
 
 	for (int i = 1; i < squaresSize - 1;i++) {
@@ -94,7 +111,7 @@ bool isEnd() {
 	}
 
 	//プレイヤーを交代して試行
-	player *= -1;
+	changePlayer();
 	for (int i = 1; i < squaresSize - 1; i++) {
 		for (int j = 1; j < squaresSize - 1; j++) {
 
@@ -122,7 +139,7 @@ void showBoard() {
 				break;
 
 			case White :
-				std::cout << "●";
+				std::cout << " ●";
 				break;
 
 			case None:
@@ -130,7 +147,7 @@ void showBoard() {
 				break;
 
 			default:
-				std::cout << "0";
+				std::cout << "ば";
 				break;
 			}
 		}
@@ -196,11 +213,11 @@ void putStone(int _row, int _line) {
 	board[_row][_line] = player;
 
 	for (int i = -1; i < 2; i++) {
-		for (int j = -1; j < 2;j++) {
+		for (int j = -1; j < 2; j++) {
 
 			int numChange = checkDir(_row, _line, i, j);
 
-			for (int k = 1; k < numChange; k++) {
+			for (int k = 1; k < numChange + 1; k++) {
 				//挟める箇所の石の置き換え
 				
 				board[_row + i * k][_line + j * k] = player;
@@ -239,5 +256,26 @@ void  totalingStone( int* result ) {
 
 void printResult(int* result) {
 
+	for (int i = 0; i < boardSize; i++) {
 
+		std::cout << "--";
+	}
+	std::cout << std::endl;
+
+	std::cout << "結果発表！！\n" << "先手(黒): " << result[0] << "枚\n" << "後手(白):" << result[1] << "枚\n" << std::endl;
+
+	if (result[0] < result[1]) {
+
+		std::cout << "先手(黒)の勝ち" << std::endl;
+	}
+	else if( result[0] > result[1] ){
+	
+		std::cout << "後手(白)の勝ち" << std::endl;
+	}
+	else {
+
+		std::cout << "引き分け" << std::endl;
+	}
+
+	return;
 }
