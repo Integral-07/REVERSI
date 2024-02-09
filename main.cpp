@@ -1,23 +1,17 @@
 #include<iostream>
-
+#include"player.h"
 
 #define boardSize 10 //盤の一辺
 #define squaresSize ( boardSize + 2 ) //処理対象のマス目の数
 
 
-enum Stone {
 
-	None = 0,
-	Black = -1,
-	White = 1,
-	Sentinel = 2,
-};
 
 int board[squaresSize][squaresSize] = { };
-int player = Black;
+
+Players player("player1", "player2");
 
 void initBoard();
-void changePlayer();
 bool isEnd();
 void showBoard();
 void printPlayer();
@@ -49,7 +43,7 @@ int main() {
 
 		putStone( row, line );
 
-		changePlayer();
+		player.changePlayer();
 	}
 
 	showBoard();
@@ -81,22 +75,6 @@ void initBoard() {
 	return;
 }
 
-void changePlayer() {
-
-	switch ( player )
-	{
-	case Black:
-		player = White;
-		break;
-	case White:
-		player = Black;
-		break;
-	default:
-		break;
-	}
-
-	return;
-}
 
 bool isEnd() {
 
@@ -111,7 +89,7 @@ bool isEnd() {
 	}
 
 	//プレイヤーを交代して試行
-	changePlayer();
+	player.changePlayer();
 	for (int i = 1; i < squaresSize - 1; i++) {
 		for (int j = 1; j < squaresSize - 1; j++) {
 
@@ -157,14 +135,14 @@ void showBoard() {
 
 void printPlayer() {
 
-	switch (player) {
+	switch (player.getCurrentPlayerStone()) {
 
 	case Black:
-		std::cout << "先手(黒)の番" << std::endl;
+		std::cout << player.getCurrentPlayerName() << "(黒)の番" << std::endl;
 		break;
 
 	case White:
-		std::cout << "後手(白)の番" << std::endl;
+		std::cout << player.getCurrentPlayerName() << "後手(白)の番" << std::endl;
 		break;
 	}
 }
@@ -191,13 +169,13 @@ bool isPlaceable(int _row, int _line) {
 int checkDir(int _row, int _line, int dir_row, int dir_line) {
 
 	int num = 1;
-	while (board[_row + dir_row * num][_line + dir_line * num] == player * -1) {
+	while (board[_row + dir_row * num][_line + dir_line * num] == player.getConfStn()) {
 		//自分の石または番兵であれば終了
 
 		num++;
 	}
 
-	if (board[_row + dir_row * num][_line + dir_line * num] == player) {
+	if (board[_row + dir_row * num][_line + dir_line * num] == player.getCurrentPlayerStone()) {
 		//番兵でなければ自分の石であり、挟めるので、相手の石の数を返す
 
 		return num - 1;
@@ -210,7 +188,7 @@ int checkDir(int _row, int _line, int dir_row, int dir_line) {
 void putStone(int _row, int _line) {
 
 	//配置箇所の石の置き換え
-	board[_row][_line] = player;
+	board[_row][_line] = player.getCurrentPlayerStone();
 
 	for (int i = -1; i < 2; i++) {
 		for (int j = -1; j < 2; j++) {
@@ -220,7 +198,7 @@ void putStone(int _row, int _line) {
 			for (int k = 1; k < numChange + 1; k++) {
 				//挟める箇所の石の置き換え
 				
-				board[_row + i * k][_line + j * k] = player;
+				board[_row + i * k][_line + j * k] = player.getCurrentPlayerStone();
 			}
 		}
 	}
