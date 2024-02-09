@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "REVERSI", "REVERSI.vcxproj", "{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "REVERSI_GUI", "..\REVERSI_GUI\REVERSI_GUI.vcxproj", "{D41BCFAC-1EF4-4E0A-986B-532B28868970}"
 EndProject
 Global
@@ -15,14 +13,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Debug|x64.ActiveCfg = Debug|x64
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Debug|x64.Build.0 = Debug|x64
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Debug|x86.ActiveCfg = Debug|Win32
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Debug|x86.Build.0 = Debug|Win32
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Release|x64.ActiveCfg = Release|x64
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Release|x64.Build.0 = Release|x64
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Release|x86.ActiveCfg = Release|Win32
-		{55CD07F5-E0A9-44DE-AB1D-2390BAEFE9B9}.Release|x86.Build.0 = Release|Win32
 		{D41BCFAC-1EF4-4E0A-986B-532B28868970}.Debug|x64.ActiveCfg = Debug|x64
 		{D41BCFAC-1EF4-4E0A-986B-532B28868970}.Debug|x64.Build.0 = Debug|x64
 		{D41BCFAC-1EF4-4E0A-986B-532B28868970}.Debug|x86.ActiveCfg = Debug|Win32
