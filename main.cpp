@@ -147,7 +147,7 @@ void showBoard() {
 				break;
 
 			default:
-				std::cout << "‚Î";
+				//std::cout << "‚Î";
 				break;
 			}
 		}
