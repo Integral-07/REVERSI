@@ -1,4 +1,4 @@
-#include<iostream>
+include<iostream>
 #include"player.h"
 
 #define boardSize 10 //”Õ‚Ìˆê•Ó
