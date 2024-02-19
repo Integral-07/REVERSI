@@ -35,6 +35,8 @@ int main() {
 
 	while (isEnd()) {
 	
+		std::system("cls");
+
 		showBoard();
 
 		printPlayer();
