@@ -35,20 +35,38 @@ int main() {
 
 	while (isEnd()) {
 	
-		std::system("cls");
+		
 
 		showBoard();
 
 		printPlayer();
 
 		int row, line;
+		/*
 		do {
 
 			std::cout << "Input where you wanna put. \nex) >> [row] [line]" << std::endl << ">> ";
 			std::cin >> row >> line;
 
-		} while ( !isPlaceable( row, line ) );
+			if (!isPlaceable(row, line)) {
 
+				std::cout << "Couldn't put on." << std::endl;
+			}
+
+		} while ( !isPlaceable( row, line ) );
+		*/
+
+		std::cout << "Input where you wanna put. \nex) >> [row] [line]" << std::endl << ">> ";
+		std::cin >> row >> line;
+
+		if (!isPlaceable(row, line)) {
+
+			std::system("cls");
+			std::cout << "Couldn't put on." << std::endl;
+			continue;
+		}			
+
+		std::system("cls");
 		putStone( row, line );
 
 		changePlayer();
