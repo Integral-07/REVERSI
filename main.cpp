@@ -1,8 +1,8 @@
 #include<iostream>
 
 
-#define boardSize 10 //”Õ‚Ìˆê•Ó
-#define squaresSize ( boardSize + 2 ) //ˆ—‘ÎÛ‚Ìƒ}ƒX–Ú‚Ì”
+#define boardSize 10 //ç›¤ã®ä¸€è¾º
+#define squaresSize ( boardSize + 2 ) //å‡¦ç†å¯¾è±¡ã®ãƒã‚¹ç›®ã®æ•°
 
 
 enum Stone {
@@ -33,7 +33,7 @@ int main() {
 
 	initBoard();
 
-	while (isEnd()) {
+	while (!isEnd()) {
 	
 		
 
@@ -89,7 +89,7 @@ void initBoard() {
 	board[initBasePosition][initBasePosition - 1] = Black;
 	board[initBasePosition - 1][initBasePosition] = Black;
 
-	//”Ô•º
+	//ç•ªå…µ
 	for (int i = 0; i < squaresSize; i++) {
 
 		board[0][i] = Sentinel;
@@ -125,25 +125,25 @@ bool isEnd() {
 
 			if (isPlaceable(i, j)) {
 
-				return true;
+				return false;
 			}
 		}
 	}
 
-	//ƒvƒŒƒCƒ„[‚ğŒğ‘ã‚µ‚Äs
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’äº¤ä»£ã—ã¦è©¦è¡Œ
 	changePlayer();
 	for (int i = 1; i < squaresSize - 1; i++) {
 		for (int j = 1; j < squaresSize - 1; j++) {
 
 			if (isPlaceable(i, j)) {
 
-				std::cout << "’u‚¯‚éêŠ‚ª‚È‚¢‚½‚ßAƒvƒŒ[ƒ„[‚ğŒğ‘ã‚µ‚Ü‚·." << std::endl;
-				return true;
+				std::cout << "ç½®ã‘ã‚‹å ´æ‰€ãŒãªã„ãŸã‚ã€ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã‚’äº¤ä»£ã—ã¾ã™." << std::endl;
+				return false;
 			}
 		}
 	}
 
-	return false;
+	return true;
 }
 
 void showBoard() {
@@ -155,19 +155,19 @@ void showBoard() {
 			switch (board[i][j]) {
 
 			case Black:
-				std::cout << "Z";
+				std::cout << "ã€‡";
 				break;
 
 			case White :
-				std::cout << " œ";
+				std::cout << " â—";
 				break;
 
 			case None:
-				std::cout << "[";
+				std::cout << "ãƒ¼";
 				break;
 
 			default:
-				//std::cout << "‚Î";
+				//std::cout << "ã°";
 				break;
 			}
 		}
@@ -180,18 +180,18 @@ void printPlayer() {
 	switch (player) {
 
 	case Black:
-		std::cout << "æè(•)‚Ì”Ô" << std::endl;
+		std::cout << "å…ˆæ‰‹(é»’)ã®ç•ª" << std::endl;
 		break;
 
 	case White:
-		std::cout << "Œãè(”’)‚Ì”Ô" << std::endl;
+		std::cout << "å¾Œæ‰‹(ç™½)ã®ç•ª" << std::endl;
 		break;
 	}
 }
 bool isPlaceable(int _row, int _line) {
 
 	if (board[_row][_line] == None) {
-		//‹ó‚Å‚ ‚ê‚Îˆ—
+		//ç©ºã§ã‚ã‚Œã°å‡¦ç†
 
 		for (int dir_row = -1; dir_row < 2; dir_row++) {
 			for (int dir_line = -1; dir_line < 2; dir_line++) {
@@ -212,13 +212,13 @@ int checkDir(int _row, int _line, int dir_row, int dir_line) {
 
 	int num = 1;
 	while (board[_row + dir_row * num][_line + dir_line * num] == player * -1) {
-		//©•ª‚ÌÎ‚Ü‚½‚Í”Ô•º‚Å‚ ‚ê‚ÎI—¹
+		//è‡ªåˆ†ã®çŸ³ã¾ãŸã¯ç•ªå…µã§ã‚ã‚Œã°çµ‚äº†
 
 		num++;
 	}
 
 	if (board[_row + dir_row * num][_line + dir_line * num] == player) {
-		//”Ô•º‚Å‚È‚¯‚ê‚Î©•ª‚ÌÎ‚Å‚ ‚èA‹²‚ß‚é‚Ì‚ÅA‘Šè‚ÌÎ‚Ì”‚ğ•Ô‚·
+		//ç•ªå…µã§ãªã‘ã‚Œã°è‡ªåˆ†ã®çŸ³ã§ã‚ã‚Šã€æŒŸã‚ã‚‹ã®ã§ã€ç›¸æ‰‹ã®çŸ³ã®æ•°ã‚’è¿”ã™
 
 		return num - 1;
 	}
@@ -229,7 +229,7 @@ int checkDir(int _row, int _line, int dir_row, int dir_line) {
 
 void putStone(int _row, int _line) {
 
-	//”z’u‰ÓŠ‚ÌÎ‚Ì’u‚«Š·‚¦
+	//é…ç½®ç®‡æ‰€ã®çŸ³ã®ç½®ãæ›ãˆ
 	board[_row][_line] = player;
 
 	for (int i = -1; i < 2; i++) {
@@ -238,7 +238,7 @@ void putStone(int _row, int _line) {
 			int numChange = checkDir(_row, _line, i, j);
 
 			for (int k = 1; k < numChange + 1; k++) {
-				//‹²‚ß‚é‰ÓŠ‚ÌÎ‚Ì’u‚«Š·‚¦
+				//æŒŸã‚ã‚‹ç®‡æ‰€ã®çŸ³ã®ç½®ãæ›ãˆ
 				
 				board[_row + i * k][_line + j * k] = player;
 			}
@@ -282,19 +282,19 @@ void printResult(int* result) {
 	}
 	std::cout << std::endl;
 
-	std::cout << "Œ‹‰Ê”­•\II\n" << "æè(•): " << result[0] << "–‡\n" << "Œãè(”’):" << result[1] << "–‡\n" << std::endl;
+	std::cout << "çµæœç™ºè¡¨ï¼ï¼\n" << "å…ˆæ‰‹(é»’): " << result[0] << "æš\n" << "å¾Œæ‰‹(ç™½):" << result[1] << "æš\n" << std::endl;
 
 	if (result[0] < result[1]) {
 
-		std::cout << "æè(•)‚ÌŸ‚¿" << std::endl;
+		std::cout << "å…ˆæ‰‹(é»’)ã®å‹ã¡" << std::endl;
 	}
 	else if( result[0] > result[1] ){
 	
-		std::cout << "Œãè(”’)‚ÌŸ‚¿" << std::endl;
+		std::cout << "å¾Œæ‰‹(ç™½)ã®å‹ã¡" << std::endl;
 	}
 	else {
 
-		std::cout << "ˆø‚«•ª‚¯" << std::endl;
+		std::cout << "å¼•ãåˆ†ã‘" << std::endl;
 	}
 
 	return;
